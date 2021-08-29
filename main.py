@@ -1,40 +1,48 @@
-import time
-from math import ceil
 from time import sleep
+from random import randint
+import board
+from math import floor
+from digitalio import DigitalInOut, Direction
+from analogio import AnalogIn
 
-def prev_sample_time():
-    prev_time = None
-    try:
-        file = open("/prev_time", "r")
-        prev_time = int(file.read())
-        print("file" + file.read())
-        file.close()
-    except:
-        prev_time = int(time.time()) - 1000000000
-    return prev_time
+battery = AnalogIn(board.A2)
 
-def next_sample_time(prev_time):
-    next = (ceil(prev_time / 60) * 60) + 60
-    return next
+led = DigitalInOut(board.GP15)
+led.direction = Direction.OUTPUT
 
-def wait_until_next_sample_time():
-    print(time.time())
-    prev = prev_sample_time()
-    next = next_sample_time(prev)
-    print("prev " + str(prev))
-    print(next)
-    print(str(next - prev)) # TODO: Why is this negative?
-    sleep(next - prev)
-    # sleep(1)
+filename = "log/" + str(randint(0, 999999999))
 
-    file = open("/prev_time", "w")
-    file.write(str(next))
-    file.close()
+def get_voltage(pin):
+    return (pin.value * 3.3) / 65536
 
-def main():
-    while True:
-        wait_until_next_sample_time()
-        print("sample")
-        sleep(0.999)
+def round_half_up(n, decimals=0):
+    multiplier = 10 ** decimals
+    return floor(n*multiplier + 0.5) / multiplier
 
-main()
+def mean(values):
+    total = sum(values)
+    return total / len(values)
+
+def get_average_voltage(pin, iterations=29, sample_rate=0.5):
+    voltages = []
+
+    for _ in range(1, iterations):
+        led.value = True
+        voltages.append(get_voltage(pin))
+        sleep(sample_rate / 4)
+        led.value = False
+        sleep(sample_rate - sample_rate / 4)
+        
+    
+    return round_half_up(mean(voltages), 3)
+
+while True:
+    voltage = get_average_voltage(battery)
+    led.value = True
+    print(voltage)
+    log = open(filename, "a")
+    log.write('{0:f}\n'.format(voltage))
+    log.flush()
+    log.close()
+    sleep(1)
+    led.value = False
