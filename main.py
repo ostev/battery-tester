@@ -23,7 +23,7 @@ def mean(values):
     total = sum(values)
     return total / len(values)
 
-def get_average_voltage(pin, iterations=29, sample_rate=0.5):
+def get_average_voltage(pin, iterations=29, sample_rate=1):
     voltages = []
 
     for _ in range(1, iterations):
