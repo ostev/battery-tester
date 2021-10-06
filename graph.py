@@ -1,7 +1,16 @@
+from statistics import mean
+import sys
 import matplotlib.pyplot as plot
 import numpy
 
-filenames = ["data/run_1", "data/run_2", "data/run_3"] 
+filenames = \
+    [ "data/run_1" 
+    , "data/run_2"
+    , "data/run_3"
+    , "data/run_4"
+    , "data/run_5"
+    , "data/run_6"
+    ] 
 
 data = []
 
@@ -20,7 +29,7 @@ for filename in filenames:
         if line != "":
             data_y.append(float(line))
             data_x.append(j * 30)
-            j+=1
+            j += 1
 
     
     i += 1
@@ -43,17 +52,48 @@ normalised_data = []
 for dataset in data:
     normalised_data.append((dataset[0][0:smallest_dataset_size], dataset[1][0:smallest_dataset_size]))
 
+def average_dataset(i, dataset_1, dataset_2):
+    # print(dataset_2[1][i])
+    # print(mean([dataset_1[1][i], dataset_2[1][i]]))
+    return mean([dataset_1[1][i], dataset_2[1][i]])
+
+def averaged_data(data_1, data_2): 
+    data = []
+    
+    j = 0
+
+    for dataset in data_1:
+        averaged_dataset = []
+
+        for (i, x) in enumerate(dataset[1]):
+            averaged_dataset.append(average_dataset(i, dataset, data_2[j]))
+
+        print((averaged_dataset))
+
+        data.append((data_1[0], averaged_dataset))
+        j += 1
+
+    return data
+
+# print(len(normalised_data[0:3]))
+final_data = averaged_data(normalised_data[0:3], normalised_data[3:6]) if len(sys.argv) == 2 and sys.argv[1] == "--averaged" else normalised_data
+
+
 figure, axis = plot.subplots()
 
-j = 1
-for run in normalised_data:
-    label = ""
-    if j % 3 == 0:
-        label = "Chevron"
-    elif j % 2 == 0:
-        label = "Energizer Max Plus"
+def get_brand_name(run: int) -> str:
+    if run == 3:
+        return "Chevron"
+    elif run == 2:
+        return "Energizer Max Plus"
+    elif run == 1:
+        return "Eveready Gold"
     else:
-        label = "Eveready Gold"
+        return get_brand_name(run - 3)
+
+j = 1
+for run in final_data:
+    label = get_brand_name(j)
     axis.plot(run[0], run[1], label=label) 
     j += 1
 
