@@ -52,32 +52,33 @@ normalised_data = []
 for dataset in data:
     normalised_data.append((dataset[0][0:smallest_dataset_size], dataset[1][0:smallest_dataset_size]))
 
-def average_dataset(i, dataset_1, dataset_2):
-    # print(dataset_2[1][i])
-    # print(mean([dataset_1[1][i], dataset_2[1][i]]))
-    return mean([dataset_1[1][i], dataset_2[1][i]])
+# def average_dataset(i, dataset_1, dataset_2):
+#     # print(dataset_2[1][i])
+#     # print(mean([dataset_1[1][i], dataset_2[1][i]]))
+#     return mean([dataset_1[1][i], dataset_2[1][i]])
 
-def averaged_data(data_1, data_2): 
-    data = []
+# def averaged_data(data_1, data_2): 
+#     data = []
     
-    j = 0
+#     j = 0
 
-    for dataset in data_1:
-        averaged_dataset = []
+#     for dataset in data_1:
+#         averaged_dataset = []
 
-        for (i, x) in enumerate(dataset[1]):
-            averaged_dataset.append(average_dataset(i, dataset, data_2[j]))
+#         for (i, x) in enumerate(dataset[1]):
+#             averaged_dataset.append(average_dataset(i, dataset, data_2[j]))
 
-        print((averaged_dataset))
+#         print((averaged_dataset))
 
-        data.append((data_1[0], averaged_dataset))
-        j += 1
+#         data.append((data_1[0], averaged_dataset))
+#         j += 1
 
-    return data
+#     return data
 
-# print(len(normalised_data[0:3]))
-final_data = averaged_data(normalised_data[0:3], normalised_data[3:6]) if len(sys.argv) == 2 and sys.argv[1] == "--averaged" else normalised_data
+# # print(len(normalised_data[0:3]))
+# final_data = averaged_data(normalised_data[0:3], normalised_data[3:6]) if len(sys.argv) == 2 and sys.argv[1] == "--averaged" else normalised_data
 
+final_data = normalised_data
 
 figure, axis = plot.subplots()
 
@@ -103,3 +104,38 @@ axis.set_title("AAA Battery Voltage Over Time, Organised by Brand")
 axis.legend()
 
 figure.savefig("graph.png", format="png")
+figure.savefig("graph.svg", format="svg")
+
+# Print hourly reports
+def chunk(lst, n):
+    return zip(*[iter(lst)]*n)
+
+chunked = []
+
+for dataset in data:
+    chunked.append(list(chunk(dataset[1], 120)))
+
+report_data = []
+
+for dataset in chunked:
+    dataset_report = []
+    for chunk in dataset:
+        dataset_report.append(mean(chunk))
+    
+    report_data.append(dataset_report)
+
+report = ""
+
+k = 1
+for dataset in report_data:
+    report += "# " + get_brand_name(k) + "\n" + "\n"
+    for item in dataset:
+        report += str(item) + "\n"
+    report += "\n"
+    k += 1
+
+print(report)
+
+file = open("report.txt", "w")
+file.write(report)
+file.close()
