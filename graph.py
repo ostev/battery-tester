@@ -84,11 +84,11 @@ figure, axis = plot.subplots()
 
 def get_brand_name(run: int) -> str:
     if run == 3:
-        return "Chevron"
+        return "Eveready Gold"
     elif run == 2:
         return "Energizer Max Plus"
     elif run == 1:
-        return "Eveready Gold"
+        return "Chevron"
     else:
         return get_brand_name(run - 3)
 
