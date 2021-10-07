@@ -120,7 +120,7 @@ report_data = []
 for dataset in chunked:
     dataset_report = []
     for chunk in dataset:
-        dataset_report.append(mean(chunk))
+        dataset_report.append(round(mean(chunk), ndigits=3))
     
     report_data.append(dataset_report)
 
