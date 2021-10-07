@@ -7,10 +7,10 @@ filenames = \
     [ "data/run_1" 
     , "data/run_2"
     , "data/run_3"
-    , "data/run_4"
-    , "data/run_5"
-    , "data/run_6"
-    ] 
+    # , "data/run_4"
+    # , "data/run_5"
+    # , "data/run_6"
+    ]
 
 data = []
 
@@ -112,7 +112,7 @@ def chunk(lst, n):
 
 chunked = []
 
-for dataset in data:
+for dataset in normalised_data:
     chunked.append(list(chunk(dataset[1], 120)))
 
 report_data = []
