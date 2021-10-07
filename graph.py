@@ -113,7 +113,7 @@ def chunk(lst, n):
 chunked = []
 
 for dataset in normalised_data:
-    chunked.append(list(chunk(dataset[1], 120)))
+    chunked.append(list(chunk(dataset[1], 240))) # Seperates into 2-hour chunks
 
 report_data = []
 
@@ -124,11 +124,11 @@ for dataset in chunked:
     
     report_data.append(dataset_report)
 
-report = ""
+report = "# Recorded Data (every 2 hours)\n\n"
 
 k = 1
 for dataset in report_data:
-    report += "# " + get_brand_name(k) + "\n" + "\n"
+    report += "## " + get_brand_name(k) + "\n" + "\n"
     for item in dataset:
         report += str(item) + "\n"
     report += "\n"
@@ -136,6 +136,6 @@ for dataset in report_data:
 
 print(report)
 
-file = open("report.txt", "w")
+file = open("log.txt", "w")
 file.write(report)
 file.close()
