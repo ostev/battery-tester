@@ -7,9 +7,9 @@ filenames = \
     [ "data/run_1" 
     , "data/run_2"
     , "data/run_3"
-    # , "data/run_4"
-    # , "data/run_5"
-    # , "data/run_6"
+    , "data/run_4"
+    , "data/run_5"
+    , "data/run_6"
     ]
 
 data = []
